@@ -1,7 +1,62 @@
 [project]
 name = "ai-agents-demo"
 version = "0.1.0"
-description = "Add your description here"
+description = "AI agents demo"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "duckduckgo-search>=7.3.0",
+    "fastapi ~=0.115.5",
+    "grpcio >=1.68.0",
+    "httpx ~=0.27.2",
+    "jiter ~=0.8.2",
+    "langchain-core ~=0.3.33",
+    "langchain-community ~=0.3.16",
+    "langchain-openai ~=0.2.9",
+    "langchain-google-genai ~=2.0.11",
+    "langchain-ollama ~=0.2.3",
+    "langgraph ~=0.3.5",
+    "langgraph-checkpoint-sqlite ~=2.0.1",
+    "langgraph-checkpoint-postgres ~=2.0.13",
+    "langgraph-supervisor ~=0.0.8",
+    "numexpr ~=2.10.1",
+    "numpy ~=1.26.4; python_version <= '3.12'",
+    "numpy ~=2.2.3; python_version >= '3.13'",
+    "pandas ~=2.2.3",
+    "psycopg[binary,pool] ~=3.2.4",
+    "pyarrow >=18.1.0",
+    "pydantic ~=2.10.1",
+    "pydantic-settings ~=2.6.1",
+    "pyowm ~=3.3.0",
+    "python-dotenv ~=1.0.1",
+    "setuptools ~=75.6.0",
+    "streamlit ~=1.40.1",
+    "uvicorn ~=0.32.1",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "pytest-env",
+    "pytest-asyncio",
+    "ruff",
+]
+
+# Group for the minimal dependencies to run just the client and Streamlit app.
+# These are also installed in the default dependencies.
+# To install run: `uv sync --frozen --only-group client`
+client = [
+    "httpx~=0.27.2",
+    "pydantic ~=2.10.1",
+    "python-dotenv ~=1.0.1",
+    "streamlit~=1.40.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.pytest_env]
+OPENAI_API_KEY = "sk-fake-openai-key"
