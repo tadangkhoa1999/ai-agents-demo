@@ -23,7 +23,6 @@ def test_get_model_openai():
         assert model.streaming is True
 
 
-
 def test_get_model_ollama():
     with patch("core.settings.settings.OLLAMA_MODEL", "llama3.3"):
         model = get_model(OllamaModelName.OLLAMA_GENERIC)

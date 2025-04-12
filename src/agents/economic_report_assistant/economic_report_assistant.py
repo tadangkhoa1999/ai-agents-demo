@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Literal
 
-from langchain_community.tools import DuckDuckGoSearchResults
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig, RunnableLambda, RunnableSerializable
@@ -10,7 +9,7 @@ from langgraph.graph import END, MessagesState, StateGraph
 from langgraph.managed import RemainingSteps
 from langgraph.prebuilt import ToolNode
 
-from agents.tools import calculator
+from agents.economic_report_assistant.tools import TaoToTrinhKinhPhiTool
 from core import get_model, settings
 
 
@@ -20,23 +19,22 @@ class AgentState(MessagesState, total=False):
     documentation: https://typing.readthedocs.io/en/latest/spec/typeddict.html#totality
     """
 
+    data: dict
     remaining_steps: RemainingSteps
 
 
-web_search = DuckDuckGoSearchResults(name="WebSearch")
-tools = [web_search, calculator]
+tools = [TaoToTrinhKinhPhiTool()]
 current_date = datetime.now().strftime("%B %d, %Y")
 instructions = f"""
-You are a helpful research assistant with the ability to search the web and use other tools.
-Today's date is {current_date}.
+Bạn là một trợ lí ảo giỏi với khả năng tạo tờ trình xin kinh phí.
 
-NOTE: THE USER CAN'T SEE THE TOOL RESPONSE.
+Ngày hôm nay là {current_date}.
 
-A few things to remember:
-- Please include markdown-formatted links to any citations used in your response. Only include one
-or two citations per response unless more are needed. ONLY USE LINKS RETURNED BY THE TOOLS.
-- Use calculator tool with numexpr to answer math questions. The user does not understand numexpr,
-    so for the final response, use human readable format - e.g. "300 * 200", not "(300 \\times 200)".
+LƯU Ý: NGƯỜI DÙNG KHÔNG THỂ NHÌN THẤY PHẢN HỒI CỦA CÔNG CỤ.
+
+Một số lưu ý khác:
+- Trả lời bằng tiếng việt
+- Không đưa ra đường dẫn docx
 """
 
 
@@ -79,6 +77,8 @@ def pending_tool_calls(state: AgentState) -> Literal["tools", "done"]:
 
 # Define the graph
 agent = StateGraph(AgentState)
+
+# Define nodes
 agent.add_node("model", acall_model)
 agent.add_node("tools", ToolNode(tools))
 agent.set_entry_point("model")
@@ -89,4 +89,4 @@ agent.add_edge("tools", "model")
 # After "model", if there are tool calls, run "tools". Otherwise END.
 agent.add_conditional_edges("model", pending_tool_calls, {"tools": "tools", "done": END})
 
-research_assistant = agent.compile(checkpointer=MemorySaver())
+economic_report_assistant = agent.compile(checkpointer=MemorySaver())

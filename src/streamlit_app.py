@@ -2,6 +2,7 @@ import asyncio
 import os
 import urllib.parse
 from collections.abc import AsyncGenerator
+import json
 
 import streamlit as st
 from dotenv import load_dotenv
@@ -23,6 +24,23 @@ from schema import ChatHistory, ChatMessage
 
 APP_TITLE = "AI Agent Demo"
 APP_ICON = "🚀"
+
+
+def is_json_string(json_string: str) -> bool:
+    """
+    Checks if a string can be parsed as valid JSON.
+
+    Args:
+    json_string: The string to check.
+
+    Returns:
+    True if the string is valid JSON, False otherwise.
+    """
+    try:
+        json.loads(json_string)
+        return True
+    except json.JSONDecodeError:
+        return False
 
 
 async def main() -> None:
@@ -277,6 +295,18 @@ async def draw_messages(
                             status.write("Output:")
                             status.write(tool_result.content)
                             status.update(state="complete")
+
+                            # check tool create docx
+                            if is_json_string(tool_result.content):
+                                tool_result_content = json.loads(tool_result.content)
+                                if "data" in tool_result_content and "docx" in tool_result_content["data"]:
+                                    with open(tool_result_content["data"]["docx"], "rb") as file:
+                                        st.download_button(
+                                            label="Download file",
+                                            data=file,
+                                            file_name=f"{tool_result.run_id}.docx",
+                                            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                        )
 
             # In case of an unexpected message type, log an error and stop
             case _:
