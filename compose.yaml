@@ -7,6 +7,8 @@ services:
       - "8080:8080"
     env_file:
       - .env
+    volumes:
+      - ./output:/app/output
     develop:
       watch:
         - path: src/agents/
@@ -35,6 +37,8 @@ services:
       - agent_service
     environment:
       - AGENT_URL=http://agent_service:8080
+    volumes:
+      - ./output:/app/output
     develop:
       watch:
         - path: src/client/
