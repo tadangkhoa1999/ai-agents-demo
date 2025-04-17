@@ -7,7 +7,7 @@ from agents.research_assistant.research_assistant import research_assistant
 from agents.economic_report_assistant.economic_report_assistant import economic_report_assistant
 from schema import AgentInfo
 
-DEFAULT_AGENT = "economic-report-assistant"
+DEFAULT_AGENT = "research-assistant"
 
 
 @dataclass

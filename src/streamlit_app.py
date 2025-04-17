@@ -299,7 +299,7 @@ async def draw_messages(
                             # check tool create docx
                             if is_json_string(tool_result.content):
                                 tool_result_content = json.loads(tool_result.content)
-                                if "data" in tool_result_content and "docx" in tool_result_content["data"]:
+                                if isinstance(tool_result_content, dict) and "data" in tool_result_content and "docx" in tool_result_content["data"]:
                                     with open(tool_result_content["data"]["docx"], "rb") as file:
                                         st.download_button(
                                             label="Download file",
