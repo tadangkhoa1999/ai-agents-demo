@@ -5,6 +5,7 @@ from langgraph.graph.state import CompiledStateGraph
 from agents.chatbot import chatbot
 from agents.research_assistant.research_assistant import research_assistant
 from agents.economic_report_assistant.economic_report_assistant import economic_report_assistant
+from agents.chb_assistant.chb_assistant import chb_assistant
 from schema import AgentInfo
 
 DEFAULT_AGENT = "research-assistant"
@@ -22,6 +23,7 @@ agents: dict[str, Agent] = {
         description="A research assistant with web search and calculator.", graph=research_assistant
     ),
     "economic-report-assistant": Agent(description="A economic report assistant.", graph=economic_report_assistant),
+    "chb-assistant": Agent(description="A sale assistant.", graph=chb_assistant),
 }
 
 
